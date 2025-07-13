@@ -3,8 +3,8 @@ import pytest
 import httpx
 from unittest.mock import AsyncMock, patch
 
-from client import CzechFabricClient
-from exceptions import RateLimitExceededError, InvalidAPIKeyError
+from czechfabric_sdk.client import CzechFabricClient
+from czechfabric_sdk.exceptions import InvalidAPIKeyError, RateLimitExceededError
 
 
 @pytest.mark.asyncio
