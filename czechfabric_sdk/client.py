@@ -8,6 +8,7 @@ from fastmcp.exceptions import ToolError
 
 import httpx
 
+
 from czechfabric_sdk.exceptions import NetworkError, InvalidAPIKeyError, RateLimitExceededError, ToolExecutionError
 from czechfabric_sdk.logging_config import logger
 from czechfabric_sdk.models import TripRequest, DeparturesRequest, GeocodeRequest
@@ -63,14 +64,8 @@ class CzechFabricClient:
         Call tool with optional caching.
         """
         if cache:
-            key = (name, tuple(sorted(params.items())))
-            from cache import cache_tool_call
-
-            @cache_tool_call
-            async def cached_call():
-                return await self._call_tool(name, params, cache=False)
-
-            return await cached_call()
+            from czechfabric_sdk.cache import cache_tool_call
+            return await cache_tool_call(name, tuple(sorted(params.items())))
 
         async with self._client:
             try:
@@ -88,12 +83,12 @@ class CzechFabricClient:
 
     async def plan_trip(self, from_place: str, to_place: str) -> str:
         request = TripRequest(from_place=from_place, to_place=to_place)
-        return await self._call_tool("plan_trip_between", request.dict())
+        return await self._call_tool("plan_trip_between", request.model_dump())
 
     async def get_departures(self, stop_name: str) -> str:
         request = DeparturesRequest(stop_name=stop_name)
-        return await self._call_tool("get_departures", request.dict())
+        return await self._call_tool("get_departures", request.model_dump())
 
     async def geocode(self, name: str, use_cache: bool = True) -> str:
         request = GeocodeRequest(name=name)
-        return await self._call_tool("geocode", request.dict(), cache=use_cache)
+        return await self._call_tool("geocode", request.model_dump(), cache=use_cache)
