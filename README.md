@@ -1,180 +1,80 @@
 # 🇨🇿 CzechFabric SDK
 
-**Async Python SDK for accessing CzechFabric MCP server**
-
-[![PyPI](https://img.shields.io/pypi/v/czechfabric-sdk.svg)](https://pypi.org/czechfabric/czechfabric-sdk/)
-[![CI](https://github.com/yourusername/czechfabric-sdk/actions/workflows/publish.yml/badge.svg)](https://github.com/czechfabric/czechfabric-sdk/actions)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+The official Python SDK for accessing the **Czech Intelligence Fabric (MCP)** - a unified API for public services like public transport, geolocation, and stop metadata across the Czech Republic.
 
 ---
 
-## ✨ Overview
+## 🚀 Features
 
-This SDK provides a robust, type-safe, async interface for interacting with a CzechFabric MCP server via [FastMCP](https://pypi.org/project/fastmcp/).
-
-**Features:**
-- ✅ Async operations
-- ✅ Automatic retries with exponential backoff
-- ✅ In-memory caching
-- ✅ Structured logging
-- ✅ Rich error handling
+- Plan public transport trips using OTP
+- Get real-time departures from any stop or coordinates
+- Geocode and reverse-geocode locations
+- Search nearby transport stops
+- Fetch detailed stop metadata
+- Built-in retry and caching support
 
 ---
 
-## 🏗 Installation
+## 📦 Installation
 
 ```bash
 pip install czechfabric-sdk
 ````
 
-Or install locally:
-
-```bash
-pip install .
-```
-
 ---
 
-## ⚡ Quickstart
+## 🧪 Quick Start
 
 ```python
-import asyncio
 from czechfabric_sdk.client import CzechFabricClient
 
-async def main():
-    client = CzechFabricClient(
-        api_key="YOUR_API_KEY",
-        base_url="https://mcp-server.example.com/mcp"
-    )
-
-    trip = await client.plan_trip("Prague", "Brno")
-    print("Trip Plan:\n", trip)
-
-    departures = await client.get_departures("Florenc")
-    print("Departures:\n", departures)
-
-    geocode = await client.geocode("Karlovo náměstí")
-    print("Geocode:\n", geocode)
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
----
-
-## 🚀 API Reference
-
-### `CzechFabricClient`
-
-#### Initialization
-
-```python
 client = CzechFabricClient(
-    api_key: str,
-    base_url: str,
-    timeout: float = 30.0
+    api_key="your-api-key",
+    base_url="https://mcp.czechfabric.cz"
 )
-```
 
-| Param     | Type  | Description                       |
-| --------- | ----- | --------------------------------- |
-| api\_key  | str   | Your API key for authentication   |
-| base\_url | str   | MCP server base URL               |
-| timeout   | float | Default timeout per request (sec) |
-
----
-
-#### Methods
-
-✅ **`plan_trip(from_place, to_place)`**
-
-* Plan a trip between two places.
-
-✅ **`get_departures(stop_name)`**
-
-* Retrieve departures for a given stop.
-
-✅ **`geocode(name, use_cache=True)`**
-
-* Geocode a place name.
-
-All methods are **async** and return `str`.
-
----
-
-## ⚠️ Error Handling
-
-This SDK raises clear, specific exceptions:
-
-* `InvalidAPIKeyError` – invalid or missing API key
-* `RateLimitExceededError` – rate limit exceeded
-* `ToolExecutionError` – generic execution failure
-* `NetworkError` – connectivity issues
-
-Example:
-
-```python
-from czechfabric_sdk.exceptions import InvalidAPIKeyError
-
-try:
-    await client.plan_trip("A", "B")
-except InvalidAPIKeyError:
-    print("Your API key is invalid.")
+# Plan a trip
+trip = await client.plan_trip("Florenc", "Karlovo náměstí", departure_time="in 15 minutes")
+print(trip)
 ```
 
 ---
 
-## 🧠 Caching
+## 📚 Usage Examples
 
-By default, `geocode()` uses in-memory caching via `async_lru`.
-To disable cache:
+All usage examples are available in [`examples.md`](./examples.md):
 
-```python
-await client.geocode("Prague", use_cache=False)
-```
+* [Trip planning](./examples.md#plan-a-trip)
+* [Get departures](./examples.md#get-departures)
+* [Geocode](./examples.md#geocode-location)
+* [Reverse geocode](./examples.md#reverse-geocode)
+* [Nearby stops](./examples.md#find-all-stops-near-coordinates)
+* [Stop metadata](./examples.md#get-stop-metadata)
+* [List stops](./examples.md#list-all-stops)
 
 ---
 
-## 🧪 Testing
+## 🧪 Running Tests
 
-Install dev dependencies:
+This SDK includes `pytest`-based tests for all endpoints.
 
 ```bash
-pip install pytest pytest-asyncio
-```
-
-Run tests:
-
-```bash
-pytest
+pip install -r requirements-dev.txt
+pytest tests/
 ```
 
 ---
 
-## 🛠 Development
+## 📜 License
 
-To build and publish:
-
-```bash
-python -m build
-twine upload dist/*
-```
-
-Or trigger CI/CD by pushing a tag:
-
-```bash
-git tag v0.1.0
-git push --tags
-```
+MIT © 2025 [Aliyu Abdulbasit Ayinde](mailto:ayindealiyu1@gmail.com)
 
 ---
 
-## 📄 License
+## 🌐 Project Links
 
-MIT License © 2025 Czech Fabric
+* Czech Intelligence Fabric: [https://mcp.czechfabric.cz](https://mcp.czechfabric.cz)
+* Issues / Feedback: [GitHub Issues](https://github.com/czechfabric/czechfabric-sdk/issues)
 
----
+```
 
-## 🤝 Contributing
-
-Issues and PRs welcome!

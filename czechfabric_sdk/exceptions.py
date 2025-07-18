@@ -16,3 +16,7 @@ class ToolExecutionError(CzechFabricError):
 
 class NetworkError(CzechFabricError):
     """Networking-related error."""
+
+
+class InvalidStopNameError(CzechFabricError):
+    """Raised when a stop name could not be matched."""
