@@ -75,6 +75,3 @@ MIT © 2025 [Aliyu Abdulbasit Ayinde](mailto:ayindealiyu1@gmail.com)
 
 * Czech Intelligence Fabric: [https://mcp.czechfabric.cz](https://mcp.czechfabric.cz)
 * Issues / Feedback: [GitHub Issues](https://github.com/czechfabric/czechfabric-sdk/issues)
-
-```
-
