@@ -2,7 +2,7 @@ import asyncio
 from czechfabric_sdk.client import CzechFabricClient
 
 client = CzechFabricClient(
-    api_key="pk_uwuo33VltjNKmTP1pF3SmCVgSvJlLSV6hiPSBmq7",
+    api_key="key",
     base_url= "https://f4ce6369bda1.ngrok-free.app/mcp" #"https://mcp.czechfabric.cz"
 )
 

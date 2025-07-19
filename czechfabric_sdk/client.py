@@ -4,6 +4,7 @@ from functools import wraps
 
 from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
+from fastmcp.client.auth import BearerAuth
 from fastmcp.exceptions import ToolError
 import httpx
 
@@ -61,7 +62,7 @@ class CzechFabricClient:
 
         self._transport = StreamableHttpTransport(
             url=base_url,
-            headers={"api_key": api_key},
+            auth=BearerAuth(api_key),
         )
         self._client = Client(self._transport, timeout=timeout)
 
