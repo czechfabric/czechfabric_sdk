@@ -1,3 +1,7 @@
+![PyPI](https://img.shields.io/pypi/v/czechfabric_sdk)
+![License](https://img.shields.io/github/license/CzechFabric/czechfabric_sdk)
+![Downloads](https://img.shields.io/pypi/dm/czechfabric_sdk)
+
 # 🇨🇿 CzechFabric SDK
 
 The official Python SDK for accessing the **Czech Intelligence Fabric (MCP)** - a unified API for public services like public transport, geolocation, and stop metadata across the Czech Republic.
