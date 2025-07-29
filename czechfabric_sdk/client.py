@@ -6,7 +6,7 @@ from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
 from fastmcp.client.auth import BearerAuth
 from fastmcp.exceptions import ToolError
-from fastmcp.protocol import ToolInfo
+from fastmcp.client import ToolInfo, CallToolResult
 from functools import cache
 
 import httpx
@@ -156,3 +156,47 @@ class CzechFabricClient:
             description = tool.description or "No description available."
             summary += f"• **{tool.name}**: {description}\n"
         return summary
+
+    async def filter_tools_by_tag(self, tag: str) -> list[ToolInfo]:
+        """
+        Filters available tools by a specific tag from the _fastmcp metadata.
+        """
+        tools = await self.list_tools()
+        return [
+            tool for tool in tools
+            if getattr(tool, "_meta", {}) and
+               tag in tool._meta.get("_fastmcp", {}).get("tags", [])
+        ]
+
+    async def execute_tool_raw(
+            self,
+            name: str,
+            arguments: dict,
+            timeout: Optional[float] = None,
+            raise_on_error: bool = True,
+            progress_handler: Optional[callable] = None
+    ) -> CallToolResult:
+        """
+        Execute any MCP tool and return the full structured result.
+        """
+        async with self._client:
+            try:
+                return await self._client.call_tool(
+                    name=name,
+                    arguments=arguments,
+                    timeout=timeout,
+                    raise_on_error=raise_on_error,
+                    progress_handler=progress_handler
+                )
+            except ToolError as e:
+                logger.warning(f"Tool '{name}' failed with error: {e}")
+                raise ToolExecutionError(f"Tool '{name}' failed: {e}") from e
+
+    async def debug_tool_response(self, name: str, arguments: dict):
+        """
+        Helper to print all fields from the raw CallToolResult.
+        """
+        result = await self.execute_tool_raw(name, arguments)
+        print("✅ Structured .data:", result.data)
+        print("📦 Raw .structured_content:", result.structured_content)
+        print("📝 Text content:", [c.text for c in result.content if hasattr(c, "text")])
