@@ -1,6 +1,6 @@
 [project]
 name = "czechfabric-sdk"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python SDK for Czech Intelligence Fabric (CzechFabric MCP)"
 authors = [
     { name = "Abdulbasit Aliyu", email = "ayindealiyu1@gmail.com" }

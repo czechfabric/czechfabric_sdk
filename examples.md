@@ -12,7 +12,9 @@ client = CzechFabricClient(
     api_key="your-api-key",
     base_url="https://mcp.czechfabric.cz"
 )
-```
+````
+
+---
 
 ## Plan a Trip
 
@@ -62,3 +64,18 @@ await client.get_stop_metadata(stop_name="Dejvická")
 await client.list_all_stops(name_contains="And", zone="P")
 ```
 
+---
+
+## List Available Tools
+
+```python
+tools = await client.get_tool_names()
+print(tools)
+```
+
+## Pretty Tool Summary Prompt (LLM Style)
+
+```python
+prompt = await client.get_tool_prompt_summary()
+print(prompt)
+```

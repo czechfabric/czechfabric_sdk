@@ -6,6 +6,9 @@ from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
 from fastmcp.client.auth import BearerAuth
 from fastmcp.exceptions import ToolError
+from fastmcp.protocol import ToolInfo
+from functools import cache
+
 import httpx
 
 from czechfabric_sdk.exceptions import (
@@ -118,3 +121,38 @@ class CzechFabricClient:
     async def list_all_stops(self, name_contains: Optional[str] = None, zone: Optional[str] = None) -> str:
         request = ListStopsRequest(name_contains=name_contains, zone=zone)
         return await self._call_tool("list_all_stops", request.model_dump())
+
+    @retry(max_attempts=3, backoff_factor=0.75)
+    async def list_tools(self) -> list[ToolInfo]:
+        """
+        Fetch metadata for all registered MCP tools from the server.
+        """
+        async with self._client:
+            try:
+                tools = await self._client.list_tools()
+                logger.info(f"Fetched {len(tools)} tools.")
+                return tools
+            except Exception as e:
+                logger.error(f"Tool listing failed: {e}")
+                raise NetworkError("Failed to fetch list of tools.") from e
+
+    async def get_tool_names(self) -> list[str]:
+        """
+        Returns just the names of all tools.
+        """
+        tools = await self.list_tools()
+        return [tool.name for tool in tools]
+
+    async def get_tool_prompt_summary(self) -> str:
+        """
+        Returns a formatted summary for LLM prompt input or help.
+        """
+        tools = await self.list_tools()
+        if not tools:
+            return "No tools available."
+
+        summary = "🧰 Available Tools:\n"
+        for tool in tools:
+            description = tool.description or "No description available."
+            summary += f"• **{tool.name}**: {description}\n"
+        return summary
