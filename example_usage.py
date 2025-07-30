@@ -41,8 +41,19 @@ async def main():
     # print(all_stops)
 
     print("\n=== List All Tools ===")
-    all_tools = await client.get_tool_prompt_summary()
+    all_tools = await client.list_tools()
     print(all_tools)
+
+    print("\n=== List All Tools Name ===")
+    all_tools_name = await client.get_tool_names()
+    print(all_tools_name)
+
+    print("\n=== List All Tools Prompt Summary ===")
+    all_tools_prompt = await client.get_tool_prompt_summary()
+    print(all_tools_prompt)
+
+
+
 
 
 if __name__ == "__main__":

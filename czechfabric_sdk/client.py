@@ -82,7 +82,7 @@ class CzechFabricClient:
                 logger.info(f"Calling tool '{name}' with {params}")
                 result = await self._client.call_tool(name, params)
                 logger.debug(f"Tool '{name}' response: {result.data}")
-                return str(result.data)
+                return result.data
             except ToolError as e:
                 msg = str(e).lower()
                 if "unauthorized" in msg or "forbidden" in msg:
