@@ -1,5 +1,6 @@
 import asyncio
-from typing import Optional
+import json
+from typing import Optional, List
 from functools import wraps
 
 from fastmcp import Client
@@ -9,6 +10,8 @@ from fastmcp.exceptions import ToolError
 from functools import cache
 
 import httpx
+from fastmcp.utilities.inspect import ToolInfo
+from mcp import Tool
 
 from czechfabric_sdk.exceptions import (
     NetworkError,
@@ -120,3 +123,29 @@ class CzechFabricClient:
     async def list_all_stops(self, name_contains: Optional[str] = None, zone: Optional[str] = None) -> str:
         request = ListStopsRequest(name_contains=name_contains, zone=zone)
         return await self._call_tool("list_all_stops", request.model_dump())
+
+    @retry(max_attempts=3, backoff_factor=0.75)
+    async def list_tools(self) -> list[Tool]:
+        async with self._client:
+            try:
+                tools = await self._client.list_tools()
+                logger.info(f"Fetched {len(tools)} tools.")
+                return tools
+            except Exception as e:
+                logger.error(f"Tool listing failed: {e}")
+                raise NetworkError("Failed to fetch list of tools.") from e
+
+    async def get_tool_names(self) -> list[str]:
+        tools = await self.list_tools()
+        return [tool.name for tool in tools]
+
+    async def get_tool_prompt_summary(self) -> str:
+        tools = await self.list_tools()
+        if not tools:
+            return "No tools available."
+
+        summary = "🧰 Available Tools:\n"
+        for tool in tools:
+            description = tool.description or "No description available."
+            summary += f"\u2022 **{tool.name}**: {description}\n"
+        return summary
